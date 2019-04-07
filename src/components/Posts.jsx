@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux"; //connections components to redux store, provided by the Provider component
 import { fetchPosts } from "../actions/postActions";
 
@@ -6,6 +7,13 @@ class Posts extends Component {
   componentWillMount() {
     //place fetch post into a prop
     this.props.fetchPosts();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // this is how we add our newly created post to the top of the posts in our DOM
+    if (nextProps.newPost) {
+      this.props.posts.unshift(nextProps.newPost);
+    }
   }
 
   render() {
@@ -24,9 +32,16 @@ class Posts extends Component {
   }
 }
 
+Posts.propTypes = {
+  fetchPosts: PropTypes.func.isRequired,
+  posts: PropTypes.array.isRequired,
+  newPost: PropTypes.object
+};
+
 // this will create a this.state.props.items
 const mapStateToProps = state => ({
-  posts: state.posts.items
+  posts: state.posts.items,
+  newPost: state.posts.item
 });
 
 // map state to props here
